@@ -3,7 +3,7 @@ fn main() {
         .lines()
         .map(|line| line.parse::<u32>());
 
-    let mut elf= 0;
+    let mut elf = 0;
     let mut max: [u32; 3] = [0, 0, 0];
 
     for line in lines.into_iter() {
@@ -17,7 +17,7 @@ fn main() {
                 elf = 0;
             }
         }
-    };
-    
+    }
+
     println!("{:?}", max.iter().sum::<u32>());
 }
