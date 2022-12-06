@@ -16,13 +16,11 @@ fn main() {
         .filter(|line| {
             let start1 = line[0][0];
             let end1 = line[0][1];
-            let vec1: Vec<u32> = (start1..=end1).collect();
-            let set1: HashSet<u32> = HashSet::from_iter(vec1);
+            let set1: HashSet<u32> = HashSet::from_iter(start1..=end1);
 
             let start2 = line[1][0];
             let end2 = line[1][1];
-            let vec2: Vec<u32> = (start2..=end2).collect();
-            let set2: HashSet<u32> = HashSet::from_iter(vec2);
+            let set2: HashSet<u32> = HashSet::from_iter(start2..=end2);
 
             set1.is_subset(&set2) || set2.is_subset(&set1)
         })
