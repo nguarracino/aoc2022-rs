@@ -2,9 +2,10 @@ fn item_priority(c: char) -> u16 {
     match c {
         'a'..='z' => c as u16 - 'a' as u16 + 1,
         'A'..='Z' => c as u16 - 'A' as u16 + 27,
-        _ => 0
+        _ => 0,
     }
 }
+
 fn main() {
     let lines: Vec<(&str, &str)> = include_str!("../input.txt")
         .lines()

@@ -5,6 +5,7 @@ fn item_priority(c: char) -> u16 {
         _ => 0,
     }
 }
+
 fn main() {
     let lines = Vec::from_iter(include_str!("../input.txt").lines());
 
