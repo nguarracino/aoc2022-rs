@@ -40,11 +40,11 @@ fn main() {
         .collect();
 
     let grid = Array2D::from_rows(&lines).unwrap();
-    let mut visible_grid = Array2D::filled_with(1, grid.num_rows(), grid.num_columns());
+    let mut scenic_grid = Array2D::filled_with(1, grid.num_rows(), grid.num_columns());
 
     for row in 0..grid.num_rows() {
         for col in 0..grid.num_columns() {
-            visible_grid
+            scenic_grid
                 .set(row, col, scenic_score(&grid, row, col))
                 .unwrap();
         }
@@ -52,6 +52,6 @@ fn main() {
 
     println!(
         "max scenic score: {:?}",
-        visible_grid.as_column_major().iter().max().unwrap()
+        scenic_grid.as_column_major().iter().max().unwrap()
     );
 }
