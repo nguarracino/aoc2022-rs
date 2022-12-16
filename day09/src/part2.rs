@@ -14,8 +14,27 @@ impl Coordinate {
     fn distance_to(&self, other: &Coordinate) -> (i32, i32) {
         (
             (other.row as i64 - self.row as i64).try_into().unwrap(),
-            (other.col as i64 - self.col as i64).try_into().unwrap()
+            (other.col as i64 - self.col as i64).try_into().unwrap(),
         )
+    }
+    fn do_move(&mut self, m: &Move) {
+        match m.direction.as_str() {
+            "U" => {
+                self.row += 1;
+            }
+            "D" => {
+                self.row -= 1;
+            }
+            "L" => {
+                self.col -= 1;
+            }
+            "R" => {
+                self.col += 1;
+            }
+            _ => {
+                panic!("Unknown direction {}", m.direction);
+            }
+        }
     }
 }
 
@@ -34,44 +53,26 @@ impl From<(String, u32)> for Move {
     }
 }
 
-fn move_head(rope: &mut Vec<Coordinate>, head_pos: usize, m: &Move) {
-    match m.direction.as_str() {
-        "U" => {
-            rope[head_pos].row += 1;
-        }
-        "D" => {
-            rope[head_pos].row -= 1;
-        }
-        "L" => {
-            rope[head_pos].col -= 1;
-        }
-        "R" => {
-            rope[head_pos].col += 1;
-        }
-        _ => {
-            panic!("Unknown direction {}", m.direction);
-        }
-    }
-}
+fn drag_tail(rope: &mut Vec<Coordinate>) {
+    for knot_pos_1 in 0..rope.len() - 1 {
+        let knot_pos_2 = knot_pos_1 + 1;
 
-fn drag_tail(rope: &mut Vec<Coordinate>, knot_pos_1: usize) {
-    let knot_pos_2 = knot_pos_1 + 1;
+        if rope[knot_pos_1].is_touching(&rope[knot_pos_2]) {
+            continue;
+        }
 
-    if rope[knot_pos_1].is_touching(&rope[knot_pos_2]) {
-        return;
-    }
+        let (row_diff, col_diff) = rope[knot_pos_1].distance_to(&rope[knot_pos_2]);
+        if row_diff < 0 {
+            rope[knot_pos_2].row += 1;
+        } else if row_diff > 0 {
+            rope[knot_pos_2].row -= 1;
+        }
 
-    let (row_diff, col_diff) = rope[knot_pos_1].distance_to(&rope[knot_pos_2]);
-    if row_diff < 0 {
-        rope[knot_pos_2].row += 1;
-    } else if row_diff > 0 {
-        rope[knot_pos_2].row -= 1;
-    }
-
-    if col_diff < 0 {
-        rope[knot_pos_2].col += 1;
-    } else if col_diff > 0 {
-        rope[knot_pos_2].col -= 1;
+        if col_diff < 0 {
+            rope[knot_pos_2].col += 1;
+        } else if col_diff > 0 {
+            rope[knot_pos_2].col -= 1;
+        }
     }
 }
 
@@ -86,10 +87,8 @@ fn main() {
 
     for m in lines {
         for _ in 0..m.steps {
-            move_head(&mut rope, 0, &m);
-            for knot_pos in 0..rope.len() - 1 {
-                drag_tail(&mut rope, knot_pos);
-            }
+            rope[0].do_move(&m);
+            drag_tail(&mut rope);
 
             grid.set(
                 rope.last().unwrap().row as usize,
